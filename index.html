@@ -1,0 +1,380 @@
+<!DOCTYPE html><html lang='en' class=''>
+<head><script src='//production-assets.codepen.io/assets/editor/live/console_runner-079c09a0e3b9ff743e39ee2d5637b9216b3545af0de366d4b9aad9dc87e26bfd.js'></script><script src='//production-assets.codepen.io/assets/editor/live/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d14629260c3ec49e5606f98fdd.js'></script><script src='//production-assets.codepen.io/assets/editor/live/css_live_reload_init-2c0dc5167d60a5af3ee189d570b1835129687ea2a61bee3513dee3a50c115a77.js'></script><meta charset='UTF-8'><meta name="robots" content="noindex"><link rel="shortcut icon" type="image/x-icon" href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico" /><link rel="mask-icon" type="" href="//production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg" color="#111" /><link rel="canonical" href="https://codepen.io/nilsynils/pen/VKQwBJ?depth=everything&order=popularity&page=61&q=tools&show_forks=false" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <style>
+        body {
+            font: 16px "Open Sans";
+            color: darkSlateGrey;
+        }
+    </style>
+
+    <style class="cp-pen-styles">body {
+        background-color: #fffacf;
+    }
+
+    .open-button
+    {
+        border-radius: 30px;
+        width: 50px;
+        height: 50px;
+        background-color: indianred;
+        left: 50px;
+    }
+    .wrapper {
+        width: 95%;
+        max-width: 90vm;
+        background: #fff;
+        margin: 3em auto;
+        padding: 1em 2em;
+        border: 1px solid lightGrey;
+        border-radius: 25px;
+        position: relative;
+    }
+    .wrapper h2 {
+        margin-top: 0;
+    }
+
+    .tools {
+        padding: 0;
+        list-style-type: none;
+        display: inline-flex;
+        flex-wrap: wrap;
+        padding: .5em .5em .5em 0;
+        margin: 0;
+    }
+    .tools li {
+        margin: 0 1em 0 0;
+        color: grey;
+    }
+    .tools li a {
+        color: grey;
+    }
+
+    .editableContent *::selection {
+        background: #9dcaff;
+    }
+    .editableContent:focus {
+        outline: none;
+    }
+
+    .modal {
+        position: absolute;
+        left: 11em;
+        top: 4.5em;
+        display: none;
+    }
+    .modal__wrapper {
+        background: #fff;
+        padding: 0 .5em;
+        border: 1px solid lightGrey;
+        border-radius: 3px;
+        transition: all 1s;
+        position: relative;
+        width: 22em;
+    }
+    .modal__wrapper:after, .modal__wrapper:before {
+        right: 100%;
+        top: 50%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+    .modal__wrapper:after {
+        border-color: rgba(255, 255, 255, 0);
+        border-right-color: #fff;
+        border-width: 6px;
+        margin-top: -6px;
+    }
+    .modal__wrapper:before {
+        border-color: transparent;
+        border-right-color: lightGrey;
+        border-width: 7px;
+        margin-top: -7px;
+    }
+    .modal input {
+        height: 1.5em;
+        padding: .25em;
+        width: 20em;
+        font-size: 16px;
+        border: 0;
+    }
+    .modal input:focus {
+        outline: none;
+    }
+
+    .visible {
+        display: block;
+    }
+
+    a.highlighted {
+        background: blue;
+        color: white;
+    }
+
+    .editableContent a:hover {
+        cursor: pointer;
+    }
+
+    .linkWrapper {
+        position: relative;
+    }
+
+    .hoverPop {
+        position: absolute;
+        left: 0;
+        top: 2.2em;
+        display: block;
+    }
+    .hoverPop__wrapper {
+        background: #fff;
+        padding: .5em .5em;
+        border: 1px solid lightGrey;
+        border-radius: 3px;
+        transition: all 1s;
+        position: relative;
+        width: auto;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .hoverPop__wrapper:after, .hoverPop__wrapper:before {
+        bottom: 100%;
+        left: 50%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    [contentEditable=true]:empty:not(:focus):before{
+        content:attr(data-text);
+    }
+    .hoverPop__wrapper:after {
+        border-color: rgba(255, 255, 255, 0);
+        border-bottom-color: #fff;
+        border-width: 6px;
+        margin-left: -6px;
+    }
+    .hoverPop__wrapper:before {
+        border-color: transparent;
+        border-bottom-color: lightGrey;
+        border-width: 7px;
+        margin-left: -7px;
+    }
+    </style>
+</head>
+<body>
+<div id="popup">
+<section class="wrapper">
+    <ul class="tools">
+        <li>
+            <a href='#' data-role='bold'>
+                <i class="fa fa-bold" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='italic'>
+                <i class="fa fa-italic" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='insertUnorderedList'>
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='insertOrderedList'>
+                <i class="fa fa-list-ol" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='createLink'>
+                <i class="fa fa-link" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='unlink'>
+                <i class="fa fa-unlink" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='insertHorizontalRule'>
+                <i class="fa fa-minus" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='insertParagraph'>
+                <i class="fa fa-paragraph" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='justifyLeft'>
+                <i class="fa fa-align-left" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='justifyCenter'>
+                <i class="fa fa-align-center" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='justifyRight'>
+                <i class="fa fa-align-right" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='subscript'>
+                <i class="fa fa-subscript" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='superscript'>
+                <i class="fa fa-superscript" aria-hidden="true"></i>
+            </a>
+        </li>
+        <li>
+            <a href='#' data-role='underline'>
+                <i class="fa fa-underline" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+    <div class="modal">
+        <div class="modal__wrapper">
+            <form class="urlForm" name="urlForm">
+                <input class="url" name="urlField" placeholder="Add URL" />
+                <i class="fa fa-close closeModal" aria-hidden="true"></i>
+            </form>
+        </div>
+    </div>
+    <div class="editableContent" contenteditable spellcheck="false">
+        <p contentEditable=true data-text="What's on your mind?"></p>
+    </div>
+</div>
+</section>
+
+<script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script><script src='https://use.fontawesome.com/ce726fce7b.js'></script>
+<script>
+    Array.prototype.map.call(document.querySelectorAll('.tools a:not([data-role="createLink"])'), (action) => {
+    action.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.execCommand(action.dataset.role, false, action.dataset.value);
+    })
+})
+
+
+// Handle the link modal
+const modal = document.querySelector('.modal');
+const closeModal = () => {
+    modal.classList.remove('visible');
+}
+let closeButton = document.querySelector('.closeModal');
+closeButton.addEventListener('click', closeModal);
+document.addEventListener('keyup', function(e) {
+    if (e.keyCode == 27) {
+        closeModal();
+    }
+});
+let otherClicks = (event) => {
+    if (document.querySelector('.modal').contains(event.target)) {
+        return false;
+    } else {
+        closeModal();
+        window.removeEventListener('click', otherClicks);
+    }
+};
+window.addEventListener('click', otherClicks);
+const anchorLink = document.querySelector('a[data-role="createLink"]');
+
+anchorLink.addEventListener('click', () => {
+    modal.classList.add('visible');
+    window.savedSel = saveSelection();
+    document.urlForm.urlField.value="";
+    document.urlForm.urlField.focus();
+})
+
+
+// Save selected text when URL modal opens. From http://stackoverflow.com/questions/5605401/insert-link-in-contenteditable-element
+function saveSelection() {
+    if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+            var ranges = [];
+            for (var i = 0, len = sel.rangeCount; i < len; ++i) {if (window.CP.shouldStopExecution(1)){break;}
+                ranges.push(sel.getRangeAt(i));
+            }
+            window.CP.exitedLoop(1);
+
+            return ranges;
+        }
+    } else if (document.selection && document.selection.createRange) {
+        return document.selection.createRange();
+    }
+    return null;
+}
+
+function restoreSelection(savedSel) {
+    if (savedSel) {
+        if (window.getSelection) {
+            sel = window.getSelection();
+            sel.removeAllRanges();
+            for (var i = 0, len = savedSel.length; i < len; ++i) {if (window.CP.shouldStopExecution(2)){break;}
+                sel.addRange(savedSel[i]);
+            }
+            window.CP.exitedLoop(2);
+
+        } else if (document.selection && savedSel.select) {
+            savedSel.select();
+        }
+    }
+}
+
+let urlForm = document.querySelector('.urlForm');
+
+urlForm.addEventListener('submit',(e) => {
+    let urlValue = urlForm.querySelector('.url').value;
+    restoreSelection(window.savedSel);
+    document.execCommand("CreateLink", false, urlValue);
+    closeModal();
+    e.preventDefault();
+})
+
+function getSelectionParentElement() {
+    var parentEl = null, sel;
+    if (window.getSelection) {
+        sel = window.getSelection();
+        if (sel.rangeCount) {
+            parentEl = sel.getRangeAt(0).commonAncestorContainer;
+            if (parentEl.nodeType != 1) {
+                parentEl = parentEl.parentNode;
+            }
+        }
+    } else if ( (sel = document.selection) && sel.type != "Control") {
+        parentEl = sel.createRange().parentElement();
+    }
+    return parentEl;
+}
+
+var sent = false;
+function onForm(event) {
+    if(!sent) {
+        var contenteditable = document.querySelector('[contenteditable]'),
+            text = contenteditable.textContent;
+        sent = true;
+    }
+    event.preventDefault();
+    console.log(text);
+
+}
+
+
+
+//# sourceURL=pen.js
+</script>
+<button class="open-button" onclick="onForm(event)"><i class="fa fa-plus"></i></button>
+</body>
+</html>
