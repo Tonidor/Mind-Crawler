@@ -1,11 +1,11 @@
 import falcon
 from sqlalchemy import exists
+import uuid
 
 from models import Entry
 
 
 class EntryResource(object):
-
     def on_get(self, req, resp):
         try:
             entry_id = req.get_json('id', dtype=int)
@@ -28,7 +28,11 @@ class EntryResource(object):
                 b = Entry()
                 b.date = req.get_json('date', dtype=int)
                 b.title = req.get_json('title', dtype=str)
-                b.text_path = req.get_json('text_path', dtype=str)
+
+                path_name = "extra/{}.txt".format(str(uuid.uuid4()))
+                with open(path_name, "w") as out:
+                    out.write(req.get_json('text', dtype=str))
+                b.text_path = path_name
                 b.save(self.session)
                 resp.json = b.as_dict
                 resp.status = falcon.HTTP_201
