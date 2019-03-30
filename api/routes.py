@@ -1,5 +1,4 @@
 import falcon
-import falcon_jsonify
 from falcon import API
 from Resources import *
 from Helpers.Middlewares import SQLAlchemySessionManager, Jsonify

@@ -40,10 +40,11 @@ def get_json_body(func):
 
     return wrapper
 
+
 def commit_database(func):
     def wrapper(self, req, resp, *args, **kwargs):
         result = func(self, req, resp, *args, **kwargs)
         self.session.commit()
         return result
-    return wrapper
 
+    return wrapper
