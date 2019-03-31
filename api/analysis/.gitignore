@@ -1,5 +1,4 @@
-
-/api/blogs
+dataset/*
 /.idea
 /.vscode
 /venv
