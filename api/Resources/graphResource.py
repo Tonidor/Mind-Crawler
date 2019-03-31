@@ -33,6 +33,6 @@ class GraphResource:
             for word in corpus:
                 self.mg.get_or_create_node(word)
 
-            self.mg.calculate_centroids()
+            self.mg.calc_centroids_and_nodes()
 
             resp.json = self.mg.as_dict

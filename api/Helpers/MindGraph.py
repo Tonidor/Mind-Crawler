@@ -4,6 +4,7 @@ import gensim.downloader as api
 from sklearn import cluster
 from sklearn import metrics
 
+
 colors = [
     Color("red"),
     Color("blue"),
@@ -15,27 +16,27 @@ colors = [
 
 
 class Node:
-    def __init__(self, topic_centroid, position, word):
-        self.color = topic_centroid.calculate_color_interpolation(position)
+    def __init__(self, word, centroid, position):
         self.word = word
         self.position = position
+        self.topic = centroid.topic
         self.occurrences = 0
-        self.group = topic_centroid.topic_index
+        self.color = centroid.calculate_color_interpolation(position)
 
     @property
     def radius(self):
         return (self.occurrences / 10) + 5
 
     def __repr__(self):
-        return str({"word": self.word, "color": self.color, "radius": self.radius, "group": self.group})
+        return str({"word": self.word, "color": self.color, "radius": self.radius, "group": self.topic})
 
     def add_occurences(self, times=1):
         self.occurrences += times
 
-    def update_centroid(self, topic_centroid, position):
-        self.color = topic_centroid.calculate_color_interpolation(self.position)
+    def update_centroid(self, centroid, position):
+        self.color = centroid.calculate_color_interpolation(self.position)
         self.position = position
-        self.group = topic_centroid
+        self.topic = centroid
 
 
 class Edge:
@@ -51,28 +52,26 @@ class Edge:
 class MindGraph:
     def __init__(self):
         self.words_used = set()
+        self.topics_created = set()
+        self.centroids = {}
         self.nodes = {}
         self.edges = set()
-        self.topics_created = set()
         self.word2vec = api.load("glove-wiki-gigaword-100")
-        self.centroids = {}
 
-    def get_or_create_centroid(self, index, position):
-        if index in self.topics_created:
-            return self.centroids.get(index)
+    def get_or_create_centroid(self, topic, position):
+        if topic in self.topics_created:
+            return self.centroids.get(topic)
         else:
-            t = TopicCentroid(index, position)
-            self.centroids[index] = t
-            self.topics_created.add(index)
+            t = Centroid(topic, position)
+            self.centroids[topic] = t
+            self.topics_created.add(topic)
             return t
 
-    def get_or_create_node(self, word, topic_centroid=None, position=None):
+    def get_or_create_node(self, word, centroid=None, position=None):
         if word in self.words_used:
             return self.nodes.get(word)
         else:
-            n = Node(word)
-            if topic_centroid and position:
-                n.update_centroid(topic_centroid, position)
+            n = Node(word, centroid, position)
             self.nodes[word] = n
             self.words_used.add(word)
             return n
@@ -88,46 +87,49 @@ class MindGraph:
         return {"nodes": [repr(node) for key, node in self.nodes.items()],
                 "edges": [repr(edge) for edge in self.edges]}
 
-    def calculate_centroids(self):
+    def calc_centroids_and_nodes(self):
 
+        # do kmeans clustering
         kmeans = cluster.KMeans(n_clusters=6)
         kmeans.fit(self.word2vec.vocab)
 
-        labels = kmeans.labels_
-        centroids = kmeans.cluster_centers_
+        # create centroids
+        topics = kmeans.labels_
+        centroid_positions = kmeans.cluster_centers_
+        for topic, centroid_position in zip(topics, centroid_positions):
+            self.get_or_create_centroid(topic, centroid_position)
+
         max_distances = {}
-        for label, centroid in zip(labels, centroids):
-            self.get_or_create_centroid(label, centroid)
-
         for word in self.words_used:
+
+            # create node
             w2vpos = self.word2vec[word]
+            centroid = kmeans.predict(w2vpos)
+            node = self.get_or_create_node(word, centroid, w2vpos)
 
-            cluster_type = kmeans.predict(w2vpos)
+            # update max_dist for every centroid
+            distance = LAG.norm(w2vpos, self.centroids[centroid].position)
+            if distance > max_distances[centroid]:
+                max_distances[centroid] = distance
 
-            distance = LAG.norm(w2vpos, cluster_type)
+            # add node to centroid.nodes
+            self.centroids[centroid].nodes.append(node)
 
-            if distance > max_distances[cluster_type]:
-                max_distances[cluster_type] = distance
+        for centroid in self.centroids.values():
+            centroid.max_distance = max_distances[centroid.index]
 
-            topic = self.get_or_create_centroid(cluster_type)
-            node = self.get_or_create_node(word, topic, w2vpos)
-            topic.nodes.append(node)
-
-        for topic in self.centroids.items():
-            topic.max_distance = max_distances[topic.index]
-
-        for topic in centroids.values():
-            for source in topic.nodes:
-                for target in topic.nodes:
+        for centroid in centroid_positions.values():
+            for source in centroid.nodes:
+                for target in centroid.nodes:
                     if target is not source:
                         self.add_edge(target, source)
 
 
-class TopicCentroid:
-    def __init__(self, topic_index, position):
-        self.color = colors[topic_index]
-        self.index = topic_index
+class Centroid:
+    def __init__(self, topic, position):
+        self.topic = topic
         self.position = position
+        self.color = colors[topic]
         self.max_distance = 0
         self.nodes = []
 
