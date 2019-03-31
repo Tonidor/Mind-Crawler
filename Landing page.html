@@ -5,94 +5,89 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Mind mapper</title>
+
+        <!-- Importts -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.0/css/bulma.css"/>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="https://code.jquery.com/jquery-3.3.1.slim.js"/>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.js"></script>
+        <script type="text/javascript" src="js.js"></script>  
 
+
+        <!-- Pull gfonts -->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+        <style>
+        body {
+            font-family: 'Montserrat';
+        }
+        </style>
     
     </head>
     
     <body>
-        <div class="columns">
+        <div class="columns is-gapless">
                 <div class="column">
-                        <img src="https://i.imgur.com/gWwR0CW.png">
+                  <svg>
+                  </svg>
+                  <script type="text/javascript" src="3js.js"></script>
 
                 </div>
+
+                
                 <div class="column  is-one-quarter ">
-                        <div class="hero is-dark  ">
+                        <div class="hero is-light  ">
                                 <div class="hero-body">
                                     <div class="columns is-mobile is-centered">
                                         <div class="column is-half">
                                           <p class="bd-notification is-primary">
                                             <figure class="image">
-                                              <img src="https://i.imgur.com/aU8KImc.png">
+                                              <img src="https://i.imgur.com/lN6IfXb.png">
                                             </figure>
                                             <br>
                                             <div class="level-item has-text-centered">
-                                                <a class="button is-dark is-large" target="popup" onclick="window.open('../Mind-Crawler/index.html','diary','width=550vw,height=700vh')"><i class="fa fa-plus-circle" aria-hidden="true"></i> ‏‏‎ New Entry</a>
-                                              </div>
+                                                <a class="button is-light is-inverted is-outlined is-large" target="popup" onclick="window.open('../Mind-Crawler/txteditor.html','diary','width=550vw,height=700vh')" ><i class="fa fa-plus-circle" aria-hidden="true"></i> ‏‏‎ New Entry</a>
+                                            </div>
+
+                                            <!-- Add to list tester HELP -->
+                                            <a class="button" onclick="addToList()"> Add to list</a>
                                           </p>
                                         </div>
                                       </div>
                                 </div>
                     </div>       
-                    <!-- Button 
-                    <div class="hero">
-                      <div class="hero-body">
-                      <div class="level-item has-text-centered">
-                        <a class="button is-white fas fa-2x"><i class="fa fa-plus-circle" aria-hidden="true"></i> ‏‏‎ New Entry</a>
-                      </div>
-                    </div>
-                    </div>
-                    -->
-                      
-                    <div class="card"> <!-- Dummy Card #1--> 
-                        </div>
-                        <div class="card"> <!-- Dummy Card #2-->
-                            <div class="card-content">
-                                    <h3 class="title is-3">Dummy #2</h3>
+                    <article class="columns">
+                    <section class="column">
+                      <ul id="entrylist"> 
+                          <li>
+                            <div class="card"> <!-- Dummy Card-->
+                              <div class="card-content">
+                                <div class="content">
+                                    <h1 class="title">Title</h1>                                    
+                                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>    
+                                  </div>
+                                  <div>
+                                    <footer class="card-footer">
+                                          <a href="#" class="card-footer-item"> <i class='fa fa-book'></i> ‏‏‎ View Entry</a>
+                                    </footer>
+                              </div>
                             </div>
-                            
-                            <footer class="card-footer">
+                          </li>
 
-                            <p class="card-footer-item has-text-centered">
-                                <span>
-                                 View entry <i class=c"fa fa-book" Delete aria-hidden="true"></i>
-                                </span>
-                            </p>
-                                
-                            <p class="card-footer-item has-text-centered">
-                                    <span>
-                                     Delete entry <i class="fa fa-trash" Delete aria-hidden="true"></i>
-                                    </span>
-                                </p>
-                            </p>
-                          </footer>
-                        </div>
-                        <div class="card"> <!-- Dummy Card #3-->
-                            <div class="card-content">
-                                    <h3 class="title is-3">Dummy #3</h3>
-                            </div>
-                            
-                            <footer class="card-footer">
-
-                            <p class="card-footer-item has-text-centered">
-                                <span>
-                                 View entry <i class="fa fa-book" Delete aria-hidden="true"></i>
-                                </span>
-                            </p>
-                                
-                            <p class="card-footer-item has-text-centered">
-                                    <span>
-                                     Delete entry <i class="fa fa-trash" Delete aria-hidden="true"></i>
-                                    </span>
-                                </p>
-                            </p>
-                          </footer>
-                        </div>
-
-                          
-                
-
-
+                          <li>
+                              <div class="card"> <!-- Dummy Card-->
+                                <div class="card-content">
+                                  <div class="content">
+                                      <h1 class="title">Title</h1>                                    
+                                        </div>
+                                    <div>
+                                      <footer class="card-footer">
+                                            <a href="#" class="card-footer-item"> <i class='fa fa-book'></i> ‏‏‎ View Entry</a>
+                                      </footer>
+                                </div>
+                              </div>
+                            </li> 
+                      </ul>
+                    </section>             
+                    </article>
     </body>
 </html>
