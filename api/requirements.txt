@@ -3,3 +3,6 @@ gunicorn
 sqlalchemy
 jsonschema
 six
+numpy
+scipy
+gensium
