@@ -362,14 +362,27 @@ function getSelectionParentElement() {
 
 var sent = false;
 var parse_text;
+/*DATA VARIABLES */
+var title;
+var diary_text;
+var date;
 function onForm(event) {
     if(!sent) {
         var contenteditable = document.querySelector('[contenteditable]'),
             parse_text = contenteditable.textContent;
         sent = true;
         console.log(parse_text);
-        const splitString = parse_text.split(" ");
-        console.log("split string" + splitString[1]);
+        var firstLine = parse_text.split('\n')[1];
+        const splitString = firstLine.split(' ');
+        title = splitString[9];
+        var lines = parse_text.split('\n');
+        lines.splice(0,2);
+        diary_text = lines.join('\n');
+        var dateObj = new Date();
+        var month = dateObj.getUTCMonth() + 1; //months from 1-12
+        var day = dateObj.getUTCDate();
+        var year = dateObj.getUTCFullYear();
+        date = year + "/" + month + "/" + day;
         window.close();
     }
     event.preventDefault();
