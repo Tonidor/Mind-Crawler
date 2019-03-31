@@ -27,9 +27,8 @@
     <body>
         <div class="columns is-gapless">
                 <div class="column">
-                  <svg>
+                  <svg id="motherfucker">
                   </svg>
-                  <script type="text/javascript" src="3js.js"></script>
 
                 </div>
 
@@ -89,5 +88,21 @@
                       </ul>
                     </section>             
                     </article>
+<link rel='stylesheet' href='styles.css'>
+<script src="https://d3js.org/d3.v4.js"></script>
+<script src="graph.js"></script>
+<script src="graph2.js"></script>
+                    <script>
+var svg = d3.select('#motherfucker');
+
+d3.json('https://gist.githubusercontent.com/mbostock/4062045/raw/5916d145c8c048a6e3086915a6be464467391c62/miserables.json', function(error, graph) {
+    if (!error) {
+        //console.log('graph', graph);
+        createV4SelectableForceDirectedGraph(svg, graph);
+    } else {
+        console.error(error);
+    }
+});
+</script>
     </body>
 </html>
