@@ -8,7 +8,6 @@ class Entry(Base):
     __tablename__ = "entry"
     id = Column('id', Integer, primary_key=True)
     date = Column('date', String(8))
-    title = Column('title', String(16))
     text_path = Column('text_path', String(50))
 
     def as_dict(self):
@@ -16,7 +15,6 @@ class Entry(Base):
             return {
                 'id': self.id,
                 'date': self.date,
-                'title': self.title,
                 'text': file.read()
             }
 
