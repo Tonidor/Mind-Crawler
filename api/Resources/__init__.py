@@ -1,1 +1,1 @@
-from entryResource import EntryResource
+from Resources.entryResource import EntryResource
