@@ -32,8 +32,10 @@ class Node:
     def add_occurences(self, times=1):
         self.occurrences += times
 
-    def update_centroid(self, centroid):
-        self.color = centroid.calculate_color_interpolation(self.position)
+    def update_centroid(self, topic_centroid, position):
+        self.color = topic_centroid.calculate_color_interpolation(self.position)
+        self.position = position
+        self.group = topic_centroid
 
 
 class Edge:
@@ -64,17 +66,19 @@ class MindGraph:
             self.topics_created.add(index)
             return t
 
-    def get_or_create_node(self, word, topic_centroid, position):
+    def get_or_create_node(self, word, topic_centroid=None, position=None):
         if word in self.words_used:
             return self.nodes.get(word)
         else:
-            n = Node(topic_centroid, position, word)
+            n = Node(word)
+            if topic_centroid and position:
+                n.update_centroid(topic_centroid, position)
             self.nodes[word] = n
             self.words_used.add(word)
             return n
 
     def add_edge(self, target, source):
-        self.edges.add((target, source, self.word2vec_distance(target.word, source.word)))
+        self.edges.add(Edge(target, source, self.word2vec_distance(target.word, source.word)))
 
     def word2vec_distance(self, target, source):
         return 1 - self.word2vec.distance(target, source)
@@ -106,10 +110,17 @@ class MindGraph:
                 max_distances[cluster_type] = distance
 
             topic = self.get_or_create_centroid(cluster_type)
-            self.get_or_create_node(word, topic, w2vpos)
+            node = self.get_or_create_node(word, topic, w2vpos)
+            topic.nodes.append(node)
 
-        for topic in self.centroids:
+        for topic in self.centroids.items():
             topic.max_distance = max_distances[topic.index]
+
+        for topic in centroids.values():
+            for source in topic.nodes:
+                for target in topic.nodes:
+                    if target is not source:
+                        self.add_edge(target, source)
 
 
 class TopicCentroid:
@@ -118,6 +129,7 @@ class TopicCentroid:
         self.index = topic_index
         self.position = position
         self.max_distance = 0
+        self.nodes = []
 
     def calculate_color_interpolation(self, target):
         distance = LAG.norm(self.position, target)
