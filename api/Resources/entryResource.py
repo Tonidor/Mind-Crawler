@@ -9,25 +9,13 @@ class EntryResource(object):
 
     def on_get(self, req, resp):
         try:
-            if type(req.get_json('id')) is list:
-                entry_ids = req.get_json('id', dtype=list)
-                entries = {}
-                for entry_id in entry_ids:
-                    entries[entry_id] = (self.session.query(Entry).get(entry_id))
+            entries = Entry.all()
+            if entries:
                 resp.status = falcon.HTTP_200
-                resp.json = entries
-
-            elif type(req.get_json('id')) is int:
-                entry_id = req.get_json('id', dtype=int)
-                entry = self.session.query(Entry).get(entry_id)
-                response = entry.as_dict
-                resp.status = falcon.HTTP_200
-                resp.json = response
-
+                resp.json = [entry.as_dict for entry in entries]
             else:
-                resp.status = falcon.HTTP_400
-                resp.media = {'error': "Entry with id {} doesn't exist".format(req.get_json('id', dtype=int))}
-
+                resp.status = falcon.HTTP_404
+                resp.json = {"error": "No entries found"}
         except falcon.HTTPBadRequest as e:
             resp.status = falcon.HTTPBadRequest_400
             resp.media = {'error': e.description}
