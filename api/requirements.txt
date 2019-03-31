@@ -1,0 +1,10 @@
+falcon
+gunicorn
+sqlalchemy
+jsonschema
+six
+numpy
+scipy
+gensim
+colour
+sklearn
