@@ -368,13 +368,15 @@ function onForm(event) {
             parse_text = contenteditable.textContent;
         sent = true;
         console.log(parse_text);
+        const splitString = parse_text.split(" ");
+        console.log("split string" + splitString[1]);
         window.close();
     }
     event.preventDefault();
 }
 
 xhr = new XMLHttpRequest();
-var url = "https://localhost:8080/";
+var url = "http://RAZER:8080";
 xhr.open("POST", url, true);
 xhr.setRequestHeader("Content-type", "application/json");
 xhr.onreadystatechange = function () {
