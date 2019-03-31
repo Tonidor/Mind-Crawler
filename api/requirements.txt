@@ -5,4 +5,4 @@ jsonschema
 six
 numpy
 scipy
-gensium
+gensim
